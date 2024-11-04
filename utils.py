@@ -26,9 +26,9 @@ def get_qa_template() -> str:
 def get_table_str_template() -> str:
     return """
     You are an expert in reading and understanding financial tables.
-    Your task is to extract concise facts from a table. 
+    Your task is to extract concise facts from a table, and list them as a series of plain sentences.
     The first row are the columns, the first column are the row names.
-    They facts should not deviate from the table provided
+    They facts should only deviate from the table provided
     Table is provided in the format of html code.
     Table: {element}
     """

@@ -71,6 +71,8 @@ class FinRAG:
         ]
         retriever.vectorstore.add_documents(summary_texts)
         retriever.docstore.mset(list(zip(doc_ids, summary_texts)))
+        print(f"Table summary: {table_summ}")
+        print("-" * 70)
         return retriever
 
     @traceable
@@ -78,6 +80,24 @@ class FinRAG:
         parser = PydanticOutputParser(pydantic_object=Resp)
         qa_chain = (
             {"context": self.retriever, "question": RunnablePassthrough()}
+            | self.prompt
+            | self.llm
+            | StrOutputParser()
+        )
+        result = qa_chain.invoke(question)
+        print(f"Result before parsing is {result}")
+        try:
+            json_str = extract_json_from_string(result)
+            json_output = parser.invoke(json_str).dict()
+        except Exception as e:
+            print(f"Result: {result} is not able to be parsed: {e}")
+            json_output = {"answer": result, "contexts": ["Error"]}
+        return json_output
+
+    def qa_without_retrieval(self, question: str) -> str:
+        parser = PydanticOutputParser(pydantic_object=Resp)
+        qa_chain = (
+            {"question": RunnablePassthrough()}
             | self.prompt
             | self.llm
             | StrOutputParser()
