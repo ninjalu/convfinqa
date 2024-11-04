@@ -1,0 +1,15 @@
+langchain
+langchain_ollama
+python_dotenv
+langchain_community
+langchain_chroma
+uvicorn
+sse_starlette
+chromadb
+nomic[local]
+torch
+python-multipart
+pydantic
+ragas
+nltk
+pandas
